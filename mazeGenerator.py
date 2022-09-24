@@ -1,8 +1,8 @@
 from numpy import random
 class Maze():
     def __init__(self, rows, cols):
-        self.rows = 2*rows - 1
-        self.cols= 2*cols - 1
+        self.rows = rows
+        self.cols= cols
         self.maze = [["w" for col in range(self.cols)] for row in range(self.rows)]
         self.primsMaze()
     def calculeNeighborhood(self, cell):
@@ -66,6 +66,6 @@ class Maze():
             self.maze[currCell[0]][currCell[1]] = "c"
             self.makePassage(currCell, neighbour)
             frontier.pop(currCellInx)
-#p=Maze(5,5)
+#p=Maze(10,10)
 #p.printMaze()
 #print(p.getMaze())
