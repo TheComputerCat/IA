@@ -1,4 +1,5 @@
 from heapq import heappop, heappush
+import random
 import sys
 from specialTuple import Tup
 from RenderMaze import RenderMaze
@@ -27,19 +28,20 @@ class AStar:
     def calculeNeighborhood(self, cell):
         neighbours = []
         row, col = cell[0], cell[1]
-        if row - 1 >= 0:
-            neighbours.append((row - 1,col))
-        if row + 1 < self.height:
-            neighbours.append((row + 1,col))
         if col - 1 >= 0:
             neighbours.append((row, col - 1))
         if col + 1 < self.width:
             neighbours.append((row, col + 1))
+        if row - 1 >= 0:
+            neighbours.append((row - 1,col))
+        if row + 1 < self.height:
+            neighbours.append((row + 1,col))
         pathNeighbours = []
         for neighbour in neighbours:
             if self.maze[neighbour[0]][neighbour[1]] == "c":
                 pathNeighbours.append(neighbour)
-        return pathNeighbours  
+        random.shuffle(pathNeighbours)
+        return pathNeighbours
     def getPath(self, cameFrom, current):
         path = [current]
         while current!= None:
