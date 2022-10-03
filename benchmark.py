@@ -22,14 +22,14 @@ for i in csv:
     if len(i) > 1:
         csv2.append(i)
 
-m = mazeGenerator.Maze(21,21)
+m = mazeGenerator.Maze(3,3)
 print(csv2)
-U = uniform.Uniform((0,2),(21,19), csv2, 1)
+U = uniform.Uniform((0,0),(-1,-1), m.getMaze(), 10)
 U.findPath()
 
-G = greedy.Greedy((0,2),(-1,-1), csv2, 10)
+G = greedy.Greedy((0,0),(-1,-1), m.getMaze(), 10)
 G.findPath()
 
 
-AS = astar.AStar((0,2),(-1,-1), csv2, 10)
+AS = astar.AStar((0,0),(-1,-1), m.getMaze(), 10)
 AS.findPath()

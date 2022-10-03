@@ -3,7 +3,7 @@ import random
 import sys
 from specialTuple import Tup
 from RenderMaze import RenderMaze
-
+import graphviz
 class Greedy:
     def __init__(self, origin, goal, maze, interval = 100):
         self.maze = maze
@@ -17,6 +17,14 @@ class Greedy:
             self.origin = origin
         else:
             self.origin = (0, 0)
+        self.graph=True if self.height<=10 and self.width<=10 else False
+        if self.graph:
+            self.f = graphviz.Digraph('a', format='png')
+            self.f.attr(bgcolor='#282C34')
+            self.f.attr('node',fontcolor='#F9F9F9')
+            self.f.attr('node',color='#F9F9F9')
+            self.f.attr('edge',color='#F9F9F9')
+            self.f.attr('edge',fontcolor='#F9F9F9')
         self.render = RenderMaze(maze, interval, ['black', 'white', 'blue', 'red', 'green','brown'])
     
     def isInRange(self,cell):
@@ -57,6 +65,15 @@ class Greedy:
             for j in range(self.width):
                 print(self.maze[i][j], end = "  ")
             print("\n")
+    def calculeDirection(self, curr, prev):
+        if curr[0] - prev[0] > 0:
+            return "u"
+        if curr[0] - prev[0] < 0:
+            return "d"
+        if curr[1] - prev[1] > 0:
+            return "r"
+        if curr[1] - prev[1] < 0:
+            return "l" 
     def findPath(self):
         cameFrom = [[ None for col in range(self.width)] for row in range(self.height)]
         h = [[ sys.maxsize for col in range(self.width)] for row in range(self.height)]
@@ -64,6 +81,7 @@ class Greedy:
         openSet = []
         #(f,x,y)
         heappush(openSet, Tup(h[self.origin[0]][self.origin[1]], self.origin))
+        self.f.node('00', 'Origin')
         while len(openSet) > 0:
             currCell = heappop(openSet).getPair()
             
@@ -87,6 +105,14 @@ class Greedy:
                     h[neighbour[0]][neighbour[1]] = preG
                     if preNeighbour not in openSet:
                         self.render.addFrame(neighbour, 4)
+                        if self.graph:
+                            move = self.calculeDirection(currCell, neighbour)
+                            if neighbour == self.goal:
+                                self.f.attr('node', shape='doublecircle')
+                            self.f.node(f'{neighbour[0]}{neighbour[1]}', f'x:{neighbour[0]}y:{neighbour[1]}' + "\nPeso: \n" + str(h[currCell[0]][currCell[1]]))
+                            self.f.edge(f'{currCell[0]}{currCell[1]}', f'{neighbour[0]}{neighbour[1]}', label=move)
                         heappush(openSet, Tup(h[neighbour[0]][neighbour[1]], neighbour))
+            if self.graph:
+                self.f.render().replace('\\', '/')
             self.render.deltePath(self.getPath(cameFrom, currCell))
         self.render.render()  
